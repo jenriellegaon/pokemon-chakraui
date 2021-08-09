@@ -4,12 +4,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   Flex,
   Button,
-  IconButton,
   Input,
   InputGroup,
   InputRightElement,
   HStack,
   Fade,
+  VStack,
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon, SearchIcon, RepeatIcon } from '@chakra-ui/icons';
 
@@ -24,7 +24,7 @@ import {
 
 import { getRandomInt } from 'helpers/helpers'
 import { useMount } from 'hooks'
-import { Pokemon } from 'components';
+import { Pokemon, CustomIconButton, CustomButton } from 'components';
 
 function App() {
   const {
@@ -72,7 +72,24 @@ function App() {
   return (
     <Flex minH="100vh" maxW="100wv" flexDirection="column">
       <Flex maxH="70px" w="100%" px={4} py={3} bg={(!isEmpty(pokemon) ? pokemon?.types[0].type?.name : "black.100")} justifyContent="space-between">
-        <HStack width="full">
+        <HStack>
+          <Button>
+            My Team
+          </Button>
+        </HStack>
+        <HStack w="full" alignContent="center" alignItems="center" justifyContent="flex-end">
+          <CustomButton 
+            text="Randomize"
+            aria-label="randomize"
+            leftIcon={<RepeatIcon />} 
+            variant="solid"
+            textColor="black.500"
+            backgroundColor="white"
+            interactive="4px"
+            isLoading={isFetchingPokemons || isFetchingPokemon}
+            onClick={() => getRandomPokemon()}
+          />
+          
           <InputGroup maxW="400px" mr={2}>
             <Input
               pr="4.5rem"
@@ -89,109 +106,63 @@ function App() {
               }}
             />
             <InputRightElement width="4.5rem">
-              <IconButton
+              <CustomIconButton
                 aria-label="search"
-                h="1.75rem"
-                size="sm"
                 variant="solid"
-                bg="white"
-                color="black.500"
-                _hover={{ bg: "white" }}
-                _active={{
-                  bg: "white",
-                  borderColor: "white",
-                }}
-                _focus={{
-                  boxShadow: "none"
-                }}
+                textColor="white"
+                backgroundColor="transparent"
                 onClick={() => onSearchPokemon()}
-                isDisabled={isEmpty(searchPokemon)}
                 icon={<SearchIcon color="black.400" />}
+                disabled={isEmpty(searchPokemon)}
               />
             </InputRightElement>
           </InputGroup>
-          <Button 
-            leftIcon={<RepeatIcon />} 
-            variant="solid" 
-            color="black.500" 
-            bg="white"
-            _hover={{ bg: "white" }}
-            _active={{
-              bg: "white",
-              borderColor: "white",
-              top: "4px"
-              
-            }}
-            _focus={{
-              boxShadow: "none"
-            }}
-            isLoading={isFetchingPokemons || isFetchingPokemon}
-            onClick={() => getRandomPokemon()}
-          > 
-            Randomize
-          </Button>
-        </HStack>
-        <HStack>
-          <IconButton
-            size="md"
-            fontSize="lg"
-            aria-label="back"
-            variant="solid"
-            bg="white"
-            color="black.500"
-            _hover={{ bg: "white" }}
-            _active={{
-              bg: "white",
-              borderColor: "white",
-              top: "4px"
-              
-            }}
-            _focus={{
-              boxShadow: "none"
-            }}
-            onClick={() => onClickPrevNext(pokemon?.id - 1)}
-            icon={<ChevronLeftIcon />}
-            disabled={(pokemon?.id === 1) || isEmpty(pokemon)}
-          />
-          <IconButton
-            size="md"
-            fontSize="lg"
-            aria-label="next"
-            variant="solid"
-            bg="white"
-            color="black.500"
-            _hover={{ bg: "white" }}
-            _active={{
-              bg: "white",
-              borderColor: "white",
-              top: "4px"
-              
-            }}
-            _focus={{
-              boxShadow: "none"
-            }}
-            onClick={() => onClickPrevNext(pokemon?.id + 1)}
-            icon={<ChevronRightIcon />}
-            disabled={(pokemon?.id === pokemons?.count) || isEmpty(pokemon)}
-          />
         </HStack>
       </Flex>
       <Flex minH="calc(100vh - 64px)" w="100%" p={3} bg="white">
-        <HStack minW="full" justifyContent="center">
+        <VStack minW="full" justifyContent="center">
           <Fade in={!isFetchingPokemon}>
             <Pokemon 
               id={pokemon?.id} 
               name={pokemon?.name} 
               image={pokemon?.sprites?.other?.["official-artwork"]?.front_default} 
               size="400px"
-              color={(!isEmpty(pokemon) ? pokemon?.types[0].type?.name : "black.100")}
-              actionType="add"
-              disabled={isEmpty(pokemon)}
-              isLoading={isFetchingPokemon}
-              onClick={() => console.log("Added to team: ", pokemon?.name)}
             />
+            <Flex flexDirection="row" justifyContent="center" mt={8}>
+              <CustomIconButton
+                aria-label="back"
+                variant="solid"
+                textColor="white"
+                interactive="4px"
+                backgroundColor={(!isEmpty(pokemon) ? pokemon?.types[0].type?.name : "black.100")}
+                onClick={() => onClickPrevNext(pokemon?.id - 1)}
+                icon={<ChevronLeftIcon />}
+                disabled={(pokemon?.id === 1) || isEmpty(pokemon)}
+              />
+              <CustomButton
+                text="Add to team"
+                variant="solid"
+                textColor="white"
+                backgroundColor={(!isEmpty(pokemon) ? pokemon?.types[0].type?.name : "black.100")}
+                interactive="4px"
+                onClick={() => console.log("Added to team: ", pokemon?.name)}
+                disabled={isEmpty(pokemon)}
+                isLoading={isFetchingPokemon}
+                mx={3}
+              />
+              <CustomIconButton
+                aria-label="next"
+                variant="solid"
+                textColor="white"
+                interactive="4px"
+                backgroundColor={(!isEmpty(pokemon) ? pokemon?.types[0].type?.name : "black.100")}
+                onClick={() => onClickPrevNext(pokemon?.id + 1)}
+                icon={<ChevronRightIcon />}
+                disabled={(pokemon?.id === 1) || isEmpty(pokemon)}
+              />
+            </Flex>
           </Fade>
-        </HStack>
+        </VStack>
       </Flex>
     </Flex>
   );
