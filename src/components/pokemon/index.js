@@ -27,7 +27,6 @@ const Pokemon = ({
         src={image}
         alt={name}
       />
-
       <Button
         color="white"
         bg={color}
@@ -53,7 +52,7 @@ const Pokemon = ({
 
 Pokemon.defaultProps = {
     id: null,
-    name: "Not available",
+    name: "Not found",
     size: "200px",
     image: "https://www.seekpng.com/png/full/150-1504180_pokemon-symbol-used-in-super-smash-bros-super.png",
     onClick: () => {},

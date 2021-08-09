@@ -2,9 +2,9 @@ import { ColorModeScript, ChakraProvider, extendTheme } from '@chakra-ui/react';
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { GlobalProvider } from './store/provider';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import Routes from './Routes';
 
 const theme = extendTheme({
   colors: {
@@ -48,7 +48,7 @@ ReactDOM.render(
     <GlobalProvider>
       <ChakraProvider theme={theme}>
         <ColorModeScript />
-        <App />
+        <Routes />
       </ChakraProvider>
     </GlobalProvider>
   </StrictMode>,

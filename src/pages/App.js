@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 //* External imports
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Flex,
   Button,
@@ -19,8 +19,12 @@ import { isEmpty } from 'lodash';
 import { GlobalContext } from 'store/provider'
 import {
   getPokemon,
+  getPokemons,
 } from 'store/actions'
-import Pokemon from './components/pokemon';
+
+import { getRandomInt } from 'helpers/helpers'
+import { useMount } from 'hooks'
+import { Pokemon } from 'components';
 
 function App() {
   const {
@@ -31,17 +35,39 @@ function App() {
   const {
     pokemon,
     isFetchingPokemon,
+    pokemons,
+    isFetchingPokemons,
   } = state
 
+  const [searchPokemon, setSearchPokemon] = useState('')
+
+  const getRandomPokemon = () => {
+    if (isEmpty(pokemons)) return
+    getPokemon(getRandomInt(1, pokemons?.count + 1))(dispatch)
+  }
+
+  const onClickPrevNext = (key) => {
+    getPokemon(key)(dispatch)
+  }
+
+  const onChange = (event) => {
+    const { value } = event.target
+    setSearchPokemon(value)
+  }
+
+  const onSearchPokemon = () => {
+    getPokemon(searchPokemon?.toLowerCase())(dispatch)
+    setSearchPokemon("")
+  }
+
   // On mount
-  useEffect(() => {
-    getPokemon(1)(dispatch)
-  }, [])
+  useMount(() => {
+    getPokemons()(dispatch)
+  })
 
   useEffect(() => {
-    if (isEmpty(pokemon)) return
-    console.log("Pokemon: ", pokemon)
-  }, [pokemon])
+    getRandomPokemon()
+  }, [pokemons])
 
   return (
     <Flex minH="100vh" maxW="100wv" flexDirection="column">
@@ -49,12 +75,40 @@ function App() {
         <HStack width="full">
           <InputGroup maxW="400px" mr={2}>
             <Input
-              placeholder="Search pokémon by id or name..." 
+              pr="4.5rem"
+              placeholder="Search pokémon by id or name..."
               bg="white" 
               textColor="black.700" 
               _placeholder={{ color: "black.400" }}
+              value={searchPokemon}
+              onChange={(e) => onChange(e)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && e.target.value) {
+                  onSearchPokemon()
+                }
+              }}
             />
-            <InputRightElement children={<SearchIcon color="black.400" />} />
+            <InputRightElement width="4.5rem">
+              <IconButton
+                aria-label="search"
+                h="1.75rem"
+                size="sm"
+                variant="solid"
+                bg="white"
+                color="black.500"
+                _hover={{ bg: "white" }}
+                _active={{
+                  bg: "white",
+                  borderColor: "white",
+                }}
+                _focus={{
+                  boxShadow: "none"
+                }}
+                onClick={() => onSearchPokemon()}
+                isDisabled={isEmpty(searchPokemon)}
+                icon={<SearchIcon color="black.400" />}
+              />
+            </InputRightElement>
           </InputGroup>
           <Button 
             leftIcon={<RepeatIcon />} 
@@ -71,6 +125,8 @@ function App() {
             _focus={{
               boxShadow: "none"
             }}
+            isLoading={isFetchingPokemons || isFetchingPokemon}
+            onClick={() => getRandomPokemon()}
           > 
             Randomize
           </Button>
@@ -93,8 +149,9 @@ function App() {
             _focus={{
               boxShadow: "none"
             }}
-            onClick={() => console.log("Previous")}
+            onClick={() => onClickPrevNext(pokemon?.id - 1)}
             icon={<ChevronLeftIcon />}
+            disabled={(pokemon?.id === 1) || isEmpty(pokemon)}
           />
           <IconButton
             size="md"
@@ -113,8 +170,9 @@ function App() {
             _focus={{
               boxShadow: "none"
             }}
-            onClick={() => console.log("Next")}
+            onClick={() => onClickPrevNext(pokemon?.id + 1)}
             icon={<ChevronRightIcon />}
+            disabled={(pokemon?.id === pokemons?.count) || isEmpty(pokemon)}
           />
         </HStack>
       </Flex>
