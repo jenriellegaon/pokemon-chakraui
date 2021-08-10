@@ -6,6 +6,7 @@ import {
   FETCH_POKEMONS_REQUESTED,
   FETCH_POKEMONS_SUCCESSFUL,
   FETCH_POKEMONS_FAILED,
+  SET_POKEMON_TEAM,
 } from './action-types'
 
 const globalState = {
@@ -13,6 +14,7 @@ const globalState = {
   isFetchingPokemon: false,
   pokemons: {},
   isFetchingPokemons: false,
+  pokemonTeam: [],
 }
 
 const globalReducer = (state = globalState, { payload, type }) => {
@@ -58,6 +60,13 @@ const globalReducer = (state = globalState, { payload, type }) => {
         ...state,
         isFetchingPokemons: false,
         pokemons: {},
+      }
+    }
+
+    case SET_POKEMON_TEAM: {
+      return {
+        ...state,
+        pokemonTeam: payload || [],
       }
     }
 

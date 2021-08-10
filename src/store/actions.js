@@ -7,6 +7,7 @@ import {
   FETCH_POKEMONS_REQUESTED,
   FETCH_POKEMONS_SUCCESSFUL,
   FETCH_POKEMONS_FAILED,
+  SET_POKEMON_TEAM,
 } from './action-types'
 
 const getPokemon = (key) => (dispatch) => {
@@ -52,7 +53,15 @@ const getPokemons = (params) => (dispatch) => {
     })
 }
 
+const setPokemonTeam = (payload) => (dispatch) => {
+  dispatch({
+    type: SET_POKEMON_TEAM,
+    payload,
+  })
+}
+
 export {
   getPokemon,
   getPokemons,
+  setPokemonTeam,
 }
