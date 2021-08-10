@@ -5,6 +5,7 @@
   "dependencies": {
     "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.0.0",
+    "@createnextapp/async-local-storage": "^1.0.1",
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@testing-library/jest-dom": "^5.9.0",
@@ -57,6 +58,7 @@
   "_moduleAliases": {
     "app": "src/",
     "components": "src/components/",
+    "constants": "src/constants",
     "helpers": "src/helpers/",
     "hooks": "src/hooks/",
     "store": "src/store/",
